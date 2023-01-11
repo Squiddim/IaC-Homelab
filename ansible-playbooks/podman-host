@@ -1,0 +1,41 @@
+- name: Prepare new podman host
+  hosts: podmanext
+  become: true
+  vars_prompt:
+    - name: ansible_become_password
+      prompt: "Enter your sudo password:"
+      private: yes
+  tasks:
+  - name: Update package lists
+    package:
+      name: "*"
+      state: latest
+  - name: Install podman
+    package:
+      name:
+        - podman
+      state: latest
+  - name: Install python-pip
+    package:
+      name: python-pip
+      state: latest
+  - name: Install podman-compose using pip
+    pip:
+      name: podman-compose
+  - name: Set up podman group
+    group:
+      name: podman
+      state: present
+  - name: Add current user to podman group
+    user:
+      name: "squiddim"
+      groups: podman
+      append: yes
+  - name: Start podman service
+    service:
+      name: podman
+      state: started
+  - name: Enable podman service to start at boot
+    service:
+      name: podman
+      enabled: yes
