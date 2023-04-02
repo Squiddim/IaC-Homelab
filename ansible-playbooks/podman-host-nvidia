@@ -27,12 +27,13 @@
       pip:
         name: podman-compose
         state: present
-    - name: Set distribution variable
-      set_fact:
-      distribution: "{{ lookup('file', '/etc/os-release') | regex_search('ID=(.*)') | regex_replace('ID=','')}}{{ lookup('file', '/etc/os-release') | regex_search('VERSION_ID=(.*)') | regex_replace('VERSION_ID=','')}}"
-    - name: Add NVIDIA container toolkit repository
+    # - name: Set distribution variable
+    #   set_fact:
+    #   distribution: "{{ lookup('file', '/etc/os-release') | regex_search('ID=(.*)') | regex_replace('ID=','')}}{{ lookup('file', '/etc/os-release') | regex_search('VERSION_ID=(.*)') | regex_replace('VERSION_ID=','')}}"
+    - name: Add NVIDIA container toolkit repository, hard coded the distro for now until i have a better solution for handling RHEL Derivates that dont report their OS Release ID as rhel 
       dnf:
-      name: https://nvidia.github.io/libnvidia-container/{{ distribution }}/libnvidia-container.repo
+      #name: https://nvidia.github.io/libnvidia-container/{{ distribution }}/libnvidia-container.repo
+      name: https://nvidia.github.io/libnvidia-container/rhel/libnvidia-container.repo
       state: present
       config_manager_state: enable
     - name: Install NVIDIA container toolkit
